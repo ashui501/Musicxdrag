@@ -7,6 +7,10 @@ from AnonXMusic import app
 from AnonXMusic.mongo.readable_time import get_readable_time
 from AnonXMusic.mongo.afkdb import add_afk, is_afk, remove_afk
 
+import sys
+print("Current sys.path:")
+print("\n".join(sys.path))
+
 
 
 @app.on_message(filters.command(["afk", "brb"], prefixes=["/", "!"]))

@@ -8,7 +8,7 @@ from AnonXMusic import app
 openai.api_key = "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"
 
 # The group username
-GROUP_USERNAME = "@dragabackup"
+GROUP_USERNAME = "@dragbackup"
 
 @app.on_message(filters.command(["chatgpt"]))
 async def chatgpt_handler(client, message):
@@ -20,11 +20,11 @@ async def chatgpt_handler(client, message):
         print(f"User status: {member.status}")  # Debugging output to check the member's status
         
         if member.status not in ["member", "administrator", "creator"]:
-            await message.reply_text("You need to join the group @dragabackup to use ChatGPT.")
+            await message.reply_text("You need to join the group @dragbackup to use ChatGPT.")
             return
     except UserNotParticipant:
         # If the user is not a participant
-        await message.reply_text("You need to join the group @dragabackup to use ChatGPT.")
+        await message.reply_text("You need to join the group @dragbackup to use ChatGPT.")
         return
     except Exception as e:
         # Catch any other errors and log for debugging

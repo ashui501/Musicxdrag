@@ -2,10 +2,8 @@
 import speedtest
 from pyrogram import Client, filters
 from pyrogram.enums import ChatAction
-from pyrogram.errors import UserNotParticipant
 
 from AnonXMusic import app
-from AnonXMusic.plugins.helper_funcs.chat_status import check_admin
 
 # <=======================================================================================================>
 

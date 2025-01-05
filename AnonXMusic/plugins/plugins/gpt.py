@@ -14,12 +14,11 @@ GROUP_USERNAME = "@dragabackup"
 async def chatgpt_handler(client, message):
     await app.send_chat_action(message.chat.id, ChatAction.TYPING)
 
-    # Check if the user is a member of the group
     try:
-        # Fetch chat member status
+        # Check if the user is a member of the group
         member = await app.get_chat_member(GROUP_USERNAME, message.from_user.id)
+        print(f"User status: {member.status}")  # Debugging output to check the member's status
         
-        # Check if the user is a member, admin, or creator
         if member.status not in ["member", "administrator", "creator"]:
             await message.reply_text("You need to join the group @dragabackup to use ChatGPT.")
             return
@@ -27,12 +26,14 @@ async def chatgpt_handler(client, message):
         # If the user is not a participant
         await message.reply_text("You need to join the group @dragabackup to use ChatGPT.")
         return
+    except Exception as e:
+        # Catch any other errors and log for debugging
+        print(f"Error checking membership: {e}")
+        await message.reply_text("There was an error checking your membership. Please try again later.")
+        return
 
     # Handle user input for ChatGPT
-    if (
-        message.text.startswith(f"/chatgpt@{app.username}")
-        and len(message.text.split(" ", 1)) > 1
-    ):
+    if message.text.startswith(f"/chatgpt@{app.username}") and len(message.text.split(" ", 1)) > 1:
         user_input = message.text.split(" ", 1)[1]
     elif message.reply_to_message and message.reply_to_message.text:
         user_input = message.reply_to_message.text

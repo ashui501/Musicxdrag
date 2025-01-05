@@ -1,14 +1,28 @@
 import openai
 from pyrogram import filters
 from pyrogram.enums import ChatAction
+from pyrogram.errors import UserNotParticipant
 from AnonXMusic import app
 
 # Set your OpenAI API key
 openai.api_key = "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"
 
+# The group username
+GROUP_USERNAME = "@dragabackup"
+
 @app.on_message(filters.command(["chatgpt"]))
 async def chatgpt_handler(client, message):
     await app.send_chat_action(message.chat.id, ChatAction.TYPING)
+
+    # Check if the user is a member of the group
+    try:
+        member = await app.get_chat_member(GROUP_USERNAME, message.from_user.id)
+        if member.status not in ["member", "administrator", "creator"]:
+            await message.reply_text("You need to join the group @dragabackup to use ChatGPT.")
+            return
+    except UserNotParticipant:
+        await message.reply_text("You need to join the group @dragabackup to use ChatGPT.")
+        return
 
     # Handle user input
     if (

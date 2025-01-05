@@ -1,5 +1,5 @@
 import asyncio
-import speedtest
+import speedtest_cli as speedtest  # Updated import
 from pyrogram import filters
 from pyrogram.types import Message
 

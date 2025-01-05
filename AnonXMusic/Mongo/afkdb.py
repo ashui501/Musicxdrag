@@ -1,7 +1,6 @@
-from AnonXMusic.utils.mongo import db
-HEHE = "\x31\x38\x30\x38\x39\x34\x33\x31\x34\x36"
+from AnonXMusic.core.mongo import mongodb
 
-afkdb = db.afk
+afkdb = mongodb.afk
 
 
 async def is_afk(user_id: int) -> bool:
@@ -31,3 +30,4 @@ async def get_afk_users() -> list:
     for user in await users.to_list(length=1000000000):
         users_list.append(user)
     return users_list
+    

@@ -1,7 +1,7 @@
 import openai
 from pyrogram import filters
 from pyrogram.enums import ChatAction
-from pyrogram.errors import UserNotParticipant
+from pyrogram.errors import UserNotParticipant, ChatAdminRequired
 from AnonXMusic import app
 
 # Set your OpenAI API key
@@ -15,16 +15,27 @@ async def chatgpt_handler(client, message):
     await app.send_chat_action(message.chat.id, ChatAction.TYPING)
 
     try:
+        # Debug: Print the user and group info
+        print(f"User ID: {message.from_user.id}")
+        print(f"Group Username: {GROUP_USERNAME}")
+        
         # Check if the user is a member of the group
         member = await app.get_chat_member(GROUP_USERNAME, message.from_user.id)
         print(f"User status: {member.status}")  # Debugging output to check the member's status
         
+        # Check membership status
         if member.status not in ["member", "administrator", "creator"]:
             await message.reply_text("You need to join the group @dragbackup to use ChatGPT.")
             return
     except UserNotParticipant:
         # If the user is not a participant
+        print("User is not a participant.")
         await message.reply_text("You need to join the group @dragbackup to use ChatGPT.")
+        return
+    except ChatAdminRequired:
+        # If the bot is not an admin
+        print("Bot is not an admin or lacks required permissions.")
+        await message.reply_text("Bot needs admin rights to check membership.")
         return
     except Exception as e:
         # Catch any other errors and log for debugging

@@ -16,15 +16,19 @@ async def chatgpt_handler(client, message):
 
     # Check if the user is a member of the group
     try:
+        # Fetch chat member status
         member = await app.get_chat_member(GROUP_USERNAME, message.from_user.id)
+        
+        # Check if the user is a member, admin, or creator
         if member.status not in ["member", "administrator", "creator"]:
             await message.reply_text("You need to join the group @dragabackup to use ChatGPT.")
             return
     except UserNotParticipant:
+        # If the user is not a participant
         await message.reply_text("You need to join the group @dragabackup to use ChatGPT.")
         return
 
-    # Handle user input
+    # Handle user input for ChatGPT
     if (
         message.text.startswith(f"/chatgpt@{app.username}")
         and len(message.text.split(" ", 1)) > 1

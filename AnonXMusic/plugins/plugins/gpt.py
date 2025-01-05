@@ -11,10 +11,7 @@ async def chatgpt_handler(client, message):
     await app.send_chat_action(message.chat.id, ChatAction.TYPING)
 
     # Handle user input
-    if (
-        message.text.startswith(f"/chatgpt@{app.username}")
-        and len(message.text.split(" ", 1)) > 1
-    ):
+    if message.text.startswith(f"/chatgpt@{app.username}") and len(message.text.split(" ", 1)) > 1:
         user_input = message.text.split(" ", 1)[1]
     elif message.reply_to_message and message.reply_to_message.text:
         user_input = message.reply_to_message.text
@@ -27,6 +24,11 @@ async def chatgpt_handler(client, message):
 
     if not user_input:
         await message.reply_text("Please provide a valid input.")
+        return
+
+    # Check if the input contains the word "singer"
+    if "singer" in user_input.lower():
+        await message.reply_text("I see you're asking about singers! Tell me more about what you're looking for!")
         return
 
     try:

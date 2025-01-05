@@ -4,7 +4,7 @@ from pyrogram.enums import ChatAction
 from AnonXMusic import app
 
 # Google API configuration (if using Google Places API)
-GOOGLE_API_KEY = "AIzaSyC7r_sYR3QQ07OO5GeVCY5RDAYOxyaNwXA"
+GOOGLE_API_KEY = "AIzaSyAMKqLzfOYUOjOA-vma74H_skVPYJWuzZI"
 GOOGLE_API_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json"
 
 # Gemini API configuration (if using Gemini cryptocurrency API)

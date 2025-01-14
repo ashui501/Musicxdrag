@@ -16,14 +16,14 @@ from AnonXMusic.plugins import ALL_MODULES
 from AnonXMusic.utils.database import get_served_chats, get_served_users, get_sudoers
 from AnonXMusic.utils.decorators.language import language, languageCB
 from AnonXMusic.utils.inline.stats import back_stats_buttons, stats_buttons
-from config import BANNED_USERS
+from config import BANNED_USERS, OWNER_ID
 
 @app.on_message(filters.command(["stats", "gstats"]) & filters.group & ~BANNED_USERS)
 @language
 async def stats_global(client, message: Message, _):
     # Restrict access to only the group with username @dragbackup
     if message.chat.username != "dragbackup":
-        return await message.reply_text("❌ **This command can only be used in the @dragbackup group.**")
+        return await message.reply_text("Tʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴜsᴇᴅ ɪɴ ᴛʜᴇ @ᴅʀᴀɢʙᴀᴄᴋᴜᴘ ɢʀᴏᴜᴘ.**")
     
     upl = stats_buttons(_, True)
     await message.reply_photo(
@@ -38,7 +38,7 @@ async def stats_global(client, message: Message, _):
 async def home_stats(client, CallbackQuery, _):
     # Restrict access to only the group with username @dragbackup
     if CallbackQuery.message.chat.username != "dragbackup":
-        return await CallbackQuery.answer("❌ **This action is restricted to the @dragbackup group.**", show_alert=True)
+        return await CallbackQuery.answer("Tʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴜsᴇᴅ ɪɴ ᴛʜᴇ @ᴅʀᴀɢʙᴀᴄᴋᴜᴘ ɢʀᴏᴜᴘ.**", show_alert=True)
     
     upl = stats_buttons(_, True)
     await CallbackQuery.edit_message_text(
@@ -52,7 +52,7 @@ async def home_stats(client, CallbackQuery, _):
 async def overall_stats(client, CallbackQuery, _):
     # Restrict access to only the group with username @dragbackup
     if CallbackQuery.message.chat.username != "dragbackup":
-        return await CallbackQuery.answer("❌ **This action is restricted to the @dragbackup group.**", show_alert=True)
+        return await CallbackQuery.answer("Tʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴜsᴇᴅ ɪɴ ᴛʜᴇ @ᴅʀᴀɢʙᴀᴄᴋᴜᴘ ɢʀᴏᴜᴘ.**", show_alert=True)
 
     await CallbackQuery.answer()
     upl = back_stats_buttons(_)
@@ -88,7 +88,7 @@ async def overall_stats(client, CallbackQuery, _):
 async def bot_stats(client, CallbackQuery, _):
     # Restrict access to only the group with username @dragbackup
     if CallbackQuery.message.chat.username != "dragbackup":
-        return await CallbackQuery.answer("❌ **This action is restricted to the @dragbackup group.**", show_alert=True)
+        return await CallbackQuery.answer("Tʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴜsᴇᴅ ɪɴ ᴛʜᴇ @ᴅʀᴀɢʙᴀᴄᴋᴜᴘ ɢʀᴏᴜᴘ.**", show_alert=True)
     
     upl = back_stats_buttons(_)
     try:

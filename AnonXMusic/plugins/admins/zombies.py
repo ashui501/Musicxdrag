@@ -96,7 +96,7 @@ async def remove(client, message):
                             chatQueue.remove(message.chat.id)
         else:
             await message.reply(
-                "👮🏻 | sᴏʀʀʏ, **ᴏɴʟʏ ᴀᴅᴍɪɴ** ᴄᴀɴ ᴇxᴇᴄᴜᴛᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ."
+                "👮🏻 | sᴏʀʀʏ, ᴏɴʟʏ ᴀᴅᴍɪɴ ᴄᴀɴ ᴇxᴇᴄᴜᴛᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ."
             )
     except FloodWait as e:
         await asyncio.sleep(e.value)
@@ -149,7 +149,7 @@ async def admins(client, message):
                     text2 += f"└ {admin.mention}\n\n"
                 else:
                     text2 += f"└ @{admin.username}\n\n"
-            text2 += f"✅ | **ᴛᴏᴛᴀʟ ɴᴜᴍʙᴇʀ ᴏғ ᴀᴅᴍɪɴs**: {lenAdminList}"
+            text2 += f"✅ | ᴛᴏᴛᴀʟ ɴᴜᴍʙᴇʀ ᴏғ ᴀᴅᴍɪɴs: {lenAdminList}"
             await app.send_message(message.chat.id, text2)
     except FloodWait as e:
         await asyncio.sleep(e.value)
@@ -168,14 +168,14 @@ async def bots(client, message):
         ):
             botList.append(bot.user)
         lenBotList = len(botList)
-        text3 = f"**ʙᴏᴛ ʟɪsᴛ - {message.chat.title}**\n\n🤖 ʙᴏᴛs\n"
+        text3 = f"ʙᴏᴛ ʟɪsᴛ - {message.chat.title}\n\n🤖 ʙᴏᴛs\n"
         while len(botList) > 1:
             bot = botList.pop(0)
             text3 += f"├ @{bot.username}\n"
         else:
             bot = botList.pop(0)
-            text3 += f"└ @{bot.username}\n\n"
-            text3 += f"✅ | **ᴛᴏᴛᴀʟ ɴᴜᴍʙᴇʀ ᴏғ ʙᴏᴛs**: {lenBotList}**"
+            text3 += f" @{bot.username}\n\n"
+            text3 += f"✅ | ᴛᴏᴛᴀʟ ɴᴜᴍʙᴇʀ ᴏғ ʙᴏᴛs: {lenBotList}"
             await app.send_message(message.chat.id, text3)
     except FloodWait as e:
         await asyncio.sleep(e.value)

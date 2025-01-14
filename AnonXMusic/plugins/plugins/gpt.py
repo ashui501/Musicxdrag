@@ -9,7 +9,7 @@ openai.api_key = "sk-proj-xOJJvPWsFTsypBq4lKrdMKMuyfkrsz-ENWh_K2WIdb_zBDV9cJIuKM
 # To store conversations (per user basis, using a dictionary for simplicity)
 user_conversations = {}
 
-@app.on_message(filters.command(["ask"]))
+@app.on_message(filters.command(["chatgpt", "gpt","ask"]))  # Add support for "gpt"
 async def ask_handler(client, message):
     user_id = message.from_user.id
     chat_id = message.chat.id
@@ -23,7 +23,7 @@ async def ask_handler(client, message):
     elif message.reply_to_message and message.reply_to_message.text:
         user_input = message.reply_to_message.text
     else:
-        await message.reply_text("**» Example usage:** `/ask How does recursion work?`")
+        await message.reply_text("Exᴀᴍᴘʟᴇ ᴜsᴀɢᴇ: /ᴄʜᴀᴛɢᴘᴛ Hᴏᴡ ᴅᴏᴇs ʀᴇᴄᴜʀsɪᴏɴ ᴡᴏʀᴋ?")
         return
 
     # Initialize the conversation history if it's a new user
@@ -59,7 +59,7 @@ async def reset_handler(client, message):
     user_id = message.from_user.id
     if user_id in user_conversations:
         user_conversations.pop(user_id)
-    await message.reply_text("**» Conversation context has been reset.**")
+    await message.reply_text("Cᴏɴᴠᴇʀsᴀᴛɪᴏɴ ᴄᴏɴᴛᴇxᴛ ʜᴀs ʙᴇᴇɴ ʀᴇsᴇᴛ.**")
 
 @app.on_message(filters.command(["setrole"]))
 async def set_role_handler(client, message):
@@ -69,6 +69,6 @@ async def set_role_handler(client, message):
         user_conversations[user_id] = [
             {"role": "system", "content": role_content}
         ]
-        await message.reply_text(f"**» System role set to:** `{role_content}`")
+        await message.reply_text(f"Sʏsᴛᴇᴍ ʀᴏʟᴇ sᴇᴛ ᴛᴏ: {role_content}")
     else:
-        await message.reply_text("»Example usage: /setrole You are a friendly AI. ")
+        await message.reply_text("Exᴀᴍᴘʟᴇ ᴜsᴀɢᴇ: /sᴇᴛʀᴏʟᴇ Yᴏᴜ ᴀʀᴇ ᴀ ғʀɪᴇɴᴅʟʏ AI. ")

@@ -4,12 +4,12 @@ from pyrogram.enums import ChatAction
 from AnonXMusic import app
 
 # Set your OpenAI API key
-openai.api_key = "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"
+openai.api_key = "sk-proj-xOJJvPWsFTsypBq4lKrdMKMuyfkrsz-ENWh_K2WIdb_zBD9cJIuKMT9Bg8McEAzjgiqQT4zgBT3BlbkFJdq93HQdAAiKXEcbLzkHltstW794hdDPVOwkGCNYsZgpjPxrTkJqhuMGPVShgQd0kMR5SL7-CoA"
 
 # To store conversations (per user basis, using a dictionary for simplicity)
 user_conversations = {}
 
-@app.on_message(filters.command(["chatgpt", "gpt","ask"]))  # Add support for "gpt"
+@app.on_message(filters.command(["chatgpt", "gpt", "ask"]))  # Add support for "gpt"
 async def ask_handler(client, message):
     user_id = message.from_user.id
     chat_id = message.chat.id
@@ -71,4 +71,35 @@ async def set_role_handler(client, message):
         ]
         await message.reply_text(f"Sʏsᴛᴇᴍ ʀᴏʟᴇ sᴇᴛ ᴛᴏ: {role_content}")
     else:
-        await message.reply_text("Exᴀᴍᴘʟᴇ ᴜsᴀɢᴇ: /sᴇᴛʀᴏʟᴇ Yᴏᴜ ᴀʀᴇ ᴀ ғʀɪᴇɴᴅʟʏ AI. ")
+        await message.reply_text("Exᴀᴍᴘʟᴇ ᴜsᴀɢᴇ: /sᴇᴛʀᴏʟᴇ Yᴏᴜ ᴀʀᴇ ᴀ ғʀɪᴇɴᴅʟʏ AI.")
+
+@app.on_message(filters.command(["generate_image", "image"]))
+async def generate_image_handler(client, message):
+    chat_id = message.chat.id
+
+    # Indicate typing action
+    await app.send_chat_action(chat_id, ChatAction.UPLOAD_PHOTO)
+
+    # Retrieve the user's input
+    if len(message.command) > 1:
+        prompt = " ".join(message.command[1:])
+    else:
+        await message.reply_text("Exᴀᴍᴘʟᴇ ᴜsᴀɢᴇ: /ɢᴇɴᴇʀᴀᴛᴇ_ɪᴍᴀɢᴇ A ғʟᴏᴀᴛɪɴɢ ᴄɪᴛʏ ɪɴ ᴛʜᴇ ᴄʟᴏᴜᴅs.")
+        return
+
+    try:
+        # Call the OpenAI API to generate the image
+        response = openai.Image.create(
+            prompt=prompt,
+            n=1,
+            size="1024x1024"
+        )
+
+        # Get the image URL
+        image_url = response["data"][0]["url"]
+
+        # Send the image URL as a message
+        await message.reply_photo(photo=image_url, caption=f"Image Prompt: {prompt}")
+
+    except Exception as e:
+        await message.reply_text(f"» Error: {str(e)}. Please try again later.")

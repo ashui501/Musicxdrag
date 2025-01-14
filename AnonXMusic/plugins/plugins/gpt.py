@@ -39,6 +39,25 @@ async def chatgpt_handler(client, message):
             ]
         )
         reply = response["choices"][0]["message"]["content"].strip()
+        
+@app.on_message(filters.command(["reset"]))
+async def reset_handler(client, message):
+    user_id = message.from_user.id
+    if user_id in user_conversations:
+        user_conversations.pop(user_id)
+    await message.reply_text("**» Conversation context has been reset.**")
+
+@app.on_message(filters.command(["setrole"]))
+async def set_role_handler(client, message):
+    user_id = message.from_user.id
+    if len(message.command) > 1:
+        role_content = " ".join(message.command[1:])
+        user_conversations[user_id] = [
+            {"role": "system", "content": role_content}
+        ]
+        await message.reply_text(f"**» System role set to:** `{role_content}`")
+    else:
+        await message.reply_text("**» Example usage:** `/setrole You are a friendly AI.`")
 
         await message.reply_text(reply, quote=True)
     except Exception as e:

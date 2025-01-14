@@ -1,32 +1,11 @@
-import platform
-from sys import version as pyver
-from config import OWNER_ID  # Ensure you have the owner's ID in the config
-import psutil
-from pyrogram import __version__ as pyrover
-from pyrogram import filters
-from pyrogram.errors import MessageIdInvalid
-from pyrogram.types import InputMediaPhoto, Message
-from pytgcalls.__version__ import __version__ as pytgver
-
-import config
-from AnonXMusic import app
-from AnonXMusic.core.userbot import assistants
-from AnonXMusic.misc import SUDOERS, mongodb
-from AnonXMusic.plugins import ALL_MODULES
-from AnonXMusic.utils.database import get_served_chats, get_served_users, get_sudoers
-from AnonXMusic.utils.decorators.language import language, languageCB
-from AnonXMusic.utils.inline.stats import back_stats_buttons, stats_buttons
-from config import BANNED_USERS
-
-
 @app.on_message(filters.command(["stats", "gstats"]) & filters.group & ~BANNED_USERS)
 @language
 async def stats_global(client, message: Message, _):
-    # Restrict access to owner and sudo users
-    if message.from_user.id not in SUDOERS and message.from_user.id != OWNER_ID:
-        return await message.reply_text("❌ **You are not authorized to use this command.**")
+    # Restrict access to only the group with username @dragbackup
+    if message.chat.username != "dragbackup":
+        return await message.reply_text("❌ **This command can only be used in the @dragbackup group.**")
     
-    upl = stats_buttons(_, True if message.from_user.id in SUDOERS else False)
+    upl = stats_buttons(_, True)
     await message.reply_photo(
         photo=config.STATS_IMG_URL,
         caption=_["gstats_2"].format(app.mention),
@@ -37,11 +16,11 @@ async def stats_global(client, message: Message, _):
 @app.on_callback_query(filters.regex("stats_back") & ~BANNED_USERS)
 @languageCB
 async def home_stats(client, CallbackQuery, _):
-    # Restrict access to owner and sudo users
-    if CallbackQuery.from_user.id not in SUDOERS and CallbackQuery.from_user.id != OWNER_ID:
-        return await CallbackQuery.answer("❌ **You are not authorized to access this.**", show_alert=True)
+    # Restrict access to only the group with username @dragbackup
+    if CallbackQuery.message.chat.username != "dragbackup":
+        return await CallbackQuery.answer("❌ **This action is restricted to the @dragbackup group.**", show_alert=True)
     
-    upl = stats_buttons(_, True if CallbackQuery.from_user.id in SUDOERS else False)
+    upl = stats_buttons(_, True)
     await CallbackQuery.edit_message_text(
         text=_["gstats_2"].format(app.mention),
         reply_markup=upl,
@@ -51,9 +30,9 @@ async def home_stats(client, CallbackQuery, _):
 @app.on_callback_query(filters.regex("TopOverall") & ~BANNED_USERS)
 @languageCB
 async def overall_stats(client, CallbackQuery, _):
-    # Restrict access to owner and sudo users
-    if CallbackQuery.from_user.id not in SUDOERS and CallbackQuery.from_user.id != OWNER_ID:
-        return await CallbackQuery.answer("❌ **You are not authorized to access this.**", show_alert=True)
+    # Restrict access to only the group with username @dragbackup
+    if CallbackQuery.message.chat.username != "dragbackup":
+        return await CallbackQuery.answer("❌ **This action is restricted to the @dragbackup group.**", show_alert=True)
 
     await CallbackQuery.answer()
     upl = back_stats_buttons(_)
@@ -87,9 +66,9 @@ async def overall_stats(client, CallbackQuery, _):
 @app.on_callback_query(filters.regex("bot_stats_sudo"))
 @languageCB
 async def bot_stats(client, CallbackQuery, _):
-    # Restrict access to sudo users only
-    if CallbackQuery.from_user.id not in SUDOERS and CallbackQuery.from_user.id != OWNER_ID:
-        return await CallbackQuery.answer("❌ **You are not authorized to access this.**", show_alert=True)
+    # Restrict access to only the group with username @dragbackup
+    if CallbackQuery.message.chat.username != "dragbackup":
+        return await CallbackQuery.answer("❌ **This action is restricted to the @dragbackup group.**", show_alert=True)
     
     upl = back_stats_buttons(_)
     try:

@@ -1,5 +1,6 @@
 import asyncio
-import speedtest_cli as speedtest  # Updated import
+
+import speedtest
 from pyrogram import filters
 from pyrogram.types import Message
 
@@ -7,7 +8,7 @@ from AnonXMusic import app
 from AnonXMusic.misc import SUDOERS
 from AnonXMusic.utils.decorators.language import language
 
-# Function to run the speed test
+
 def testspeed(m, _):
     try:
         test = speedtest.Speedtest()
@@ -23,18 +24,18 @@ def testspeed(m, _):
         return m.edit_text(f"<code>{e}</code>")
     return result
 
-# Command handler for /speedtest
-@app.on_message(filters.command(["speedtest", "spt"]) & SUDOERS)
+
+@app.on_message(
+    filters.command(
+        ["speedtest", "spt"], prefixes=["/", "!", "%", ",", "", ".", "@", "#"]
+    )
+    & SUDOERS
+)
 @language
 async def speedtest_function(client, message: Message, _):
-    # Notify the user that the speed test is in progress
     m = await message.reply_text(_["server_11"])
-    
-    # Run the speed test asynchronously
     loop = asyncio.get_event_loop()
     result = await loop.run_in_executor(None, testspeed, m, _)
-    
-    # Format the output message with the results
     output = _["server_15"].format(
         result["client"]["isp"],
         result["client"]["country"],
@@ -45,9 +46,5 @@ async def speedtest_function(client, message: Message, _):
         result["server"]["latency"],
         result["ping"],
     )
-    
-    # Send the speed test result as an image with the caption containing the details
     msg = await message.reply_photo(photo=result["share"], caption=output)
-    
-    # Clean up and delete the waiting message
     await m.delete()

@@ -71,4 +71,4 @@ async def set_role_handler(client, message):
         ]
         await message.reply_text(f"**» System role set to:** `{role_content}`")
     else:
-        await message.reply_text("**» Example usage:** `/setrole You are a friendly AI.`")
+        await message.reply_text("»Example usage: /setrole You are a friendly AI. ")

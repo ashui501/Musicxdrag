@@ -5,7 +5,7 @@ from AnonXMusic import app
 
 # Getimg API key (replace with your actual key)
 GETIMG_API_KEY = "key-ICLT6PNtwcDA5PKI7DmuKMXrueoKcDybWuHrXX1o9V8eszHCAOabBpvq2d7ZWewTa5A50ntiXEkDcMo1ewE5exp6LxuOAAr"
-GETIMG_API_URL = "https://api.getimg.ai/v1/generate"
+GETIMG_API_URL = "https://api.getimg.ai/v1/essential-v2/text-to-image"
 
 # Function to generate an image using Getimg API
 def generate_image(prompt):

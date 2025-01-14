@@ -59,7 +59,7 @@ async def reset_handler(client, message):
     user_id = message.from_user.id
     if user_id in user_conversations:
         user_conversations.pop(user_id)
-    await message.reply_text("Cᴏɴᴠᴇʀsᴀᴛɪᴏɴ ᴄᴏɴᴛᴇxᴛ ʜᴀs ʙᴇᴇɴ ʀᴇsᴇᴛ.**")
+    await message.reply_text("Cᴏɴᴠᴇʀsᴀᴛɪᴏɴ ᴄᴏɴᴛᴇxᴛ ʜᴀs ʙᴇᴇɴ ʀᴇsᴇᴛ.")
 
 @app.on_message(filters.command(["setrole"]))
 async def set_role_handler(client, message):

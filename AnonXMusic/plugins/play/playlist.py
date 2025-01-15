@@ -27,7 +27,7 @@ from AnonXMusic.utils.inline.playlist import (
     get_playlist_markup,
     warning_markup,
 )
-from AnonXMusic.utils.pastebin import anonyBin
+from AnonXMusic.utils.pastebin import AnonyBin
 import time
 import asyncio
 import yt_dlp

@@ -35,7 +35,7 @@ from youtube_search import YoutubeSearch
 from youtubesearchpython import VideosSearch
 from youtubesearchpython import SearchVideos
 
-from RISHUMUSIC.utils.stream.stream import stream
+from AnonXMusic.utils.stream.stream import stream
 from typing import Dict, List, Union
 from time import time
 import asyncio

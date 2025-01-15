@@ -149,3 +149,12 @@ HELP_15 = """
 /speed or /playback : ғᴏʀ ᴀᴅᴊᴜsᴛɪɴɢ ᴛʜᴇ ᴀᴜᴅɪᴏ ᴘʟᴀʏʙᴀᴄᴋ sᴘᴇᴇᴅ ɪɴ ɢʀᴏᴜᴘ.
 /cspeed or /cplayback : ғᴏʀ ᴀᴅᴊᴜsᴛɪɴɢ ᴛʜᴇ ᴀᴜᴅɪᴏ ᴘʟᴀʏʙᴀᴄᴋ sᴘᴇᴇᴅ ɪɴ ᴄʜᴀɴɴᴇʟ.
 """
+HELP_16 = """
+<B><U> CHATGPT COMMANDS :</B></U>
+
+USE CHATGPT USING THESE FOLLOWING COMMANDS 
+/ASK,/CHATGPT,/GPT
+TO RESET THE CONVERSTION USE /RESET 
+TO SET THE ROLE FOR CHATGPT USE /SETROLE 
+"""
+

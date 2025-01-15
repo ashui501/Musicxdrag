@@ -51,7 +51,7 @@ user_command_count = {}
 # Define the threshold for command spamming (e.g., 20 commands within 60 seconds)
 SPAM_THRESHOLD = 2
 SPAM_WINDOW_SECONDS = 5
-from RISHUMUSIC.core.mongo import mongodb
+from AnonXMusic.core.mongo import mongodb
 
 
 playlistdb = mongodb.playlist
@@ -554,7 +554,7 @@ async def add_playlist(client, message: Message, _):
             return await message.reply_text(str(e))
             pass
     else:
-        from RISHUMUSIC import YouTube
+        from AnonXMusic import YouTube
 
         # Add a specific song by name
         query = " ".join(message.command[1:])
@@ -674,7 +674,7 @@ async def del_plist(client, CallbackQuery, _):
 @app.on_callback_query(filters.regex("recover_playlist") & ~BANNED_USERS)
 @languageCB
 async def add_playlist(client, CallbackQuery, _):
-    from RISHUMUSIC import YouTube
+    from AnonXMusic import YouTube
 
     callback_data = CallbackQuery.data.strip()
     videoid = callback_data.split(None, 1)[1]
@@ -743,12 +743,12 @@ async def add_playlists(client, CallbackQuery, _):
     callback_data = CallbackQuery.data.strip()
     videoid = callback_data.split(None, 1)[1]
     user_id = CallbackQuery.from_user.id
-    from RISHUMUSIC import YouTube
+    from AnonXMusic import YouTube
 
     _check = await get_playlist(user_id, videoid)
     if _check:
         try:
-            from RISHUMUSIC import YouTube
+            from AnonXMusic import YouTube
 
             return await CallbackQuery.answer(_["playlist_8"], show_alert=True)
         except:
@@ -793,7 +793,7 @@ DELETE_ALL_PLAYLIST_COMMAND = "delallplaylist"
 @app.on_message(filters.command(DELETE_ALL_PLAYLIST_COMMAND) & ~BANNED_USERS)
 @language
 async def delete_all_playlists(client, message, _):
-    from RISHUMUSIC import YouTube
+    from AnonXMusic import YouTube
 
     user_id = message.from_user.id
     _playlist = await get_playlist_names(user_id)
@@ -810,7 +810,7 @@ async def delete_all_playlists(client, message, _):
 @app.on_callback_query(filters.regex("del_playlist") & ~BANNED_USERS)
 @languageCB
 async def del_plist(client, CallbackQuery, _):
-    from RISHUMUSIC import YouTube
+    from AnonXMusic import YouTube
 
     callback_data = CallbackQuery.data.strip()
     videoid = callback_data.split(None, 1)[1]
@@ -833,7 +833,7 @@ async def del_plist(client, CallbackQuery, _):
 @app.on_callback_query(filters.regex("delete_whole_playlist") & ~BANNED_USERS)
 @languageCB
 async def del_whole_playlist(client, CallbackQuery, _):
-    from RISHUMUSIC import YouTube
+    from AnonXMusic import YouTube
 
     _playlist = await get_playlist_names(CallbackQuery.from_user.id)
     for x in _playlist:
@@ -860,7 +860,7 @@ async def get_playlist_playmode_(client, CallbackQuery, _):
 @app.on_callback_query(filters.regex("delete_warning") & ~BANNED_USERS)
 @languageCB
 async def delete_warning_message(client, CallbackQuery, _):
-    from RISHUMUSIC import YouTube
+    from AnonXMusic import YouTube
 
     try:
         await CallbackQuery.answer()
@@ -873,7 +873,7 @@ async def delete_warning_message(client, CallbackQuery, _):
 @app.on_callback_query(filters.regex("home_play") & ~BANNED_USERS)
 @languageCB
 async def home_play_(client, CallbackQuery, _):
-    from RISHUMUSIC import YouTube
+    from AnonXMusic import YouTube
 
     try:
         await CallbackQuery.answer()
@@ -888,7 +888,7 @@ async def home_play_(client, CallbackQuery, _):
 @app.on_callback_query(filters.regex("del_back_playlist") & ~BANNED_USERS)
 @languageCB
 async def del_back_playlist(client, CallbackQuery, _):
-    from RISHUMUSIC import YouTube
+    from AnonXMusic import YouTube
 
     user_id = CallbackQuery.from_user.id
     _playlist = await get_playlist_names(user_id)

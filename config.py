@@ -18,6 +18,9 @@ MONGO_DB_URI = getenv("MONGO_DB_URI")
 
 DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 60))
 
+SERVER_PLAYLIST_LIMIT = 300  # Set your desired limit here
+
+
 # Chat id of a group for logging bot's activities
 LOGGER_ID = int(getenv("LOGGER_ID", ))
 

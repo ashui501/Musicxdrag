@@ -39,7 +39,7 @@ from AnonXMusic.utils.stream.stream import stream
 from typing import Dict, List, Union
 from time import time
 import asyncio
-from RISHUMUSIC.utils.extraction import extract_user
+from AnonXMusic.utils.extraction import extract_user
 
 #youtube api key
 YOUTUBE_API_KEY = 'AIzaSyAisAILkwpcmK7TC79R6UhQ3isSqUnHvhY'  # Regenerate your key and replace this

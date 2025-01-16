@@ -18,13 +18,17 @@ from AnonXMusic.utils.decorators.language import language, languageCB
 from AnonXMusic.utils.inline.stats import back_stats_buttons, stats_buttons
 from config import BANNED_USERS, OWNER_ID
 
-@app.on_message(filters.command(["stats", "gstats"]) & filters.group & ~BANNED_USERS)
+@app.on_message(filters.command(["stats", "gstats"]) & ~BANNED_USERS)
 @language
 async def stats_global(client, message: Message, _):
-    # Restrict access to only the group with username @dragbackup
-    if message.chat.username != "dragbackup":
-        return await message.reply_text("Tʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴜsᴇᴅ ɪɴ ᴛʜᴇ @ᴅʀᴀɢʙᴀᴄᴋᴜᴘ ɢʀᴏᴜᴘ..")
-    
+    # Allow sudo users and owner to use it from anywhere
+    if message.from_user.id not in SUDOERS and message.from_user.id != OWNER_ID:
+        # Restrict access to only the group with username @dragbackup
+        if message.chat.username != "dragbackup":
+            return await message.reply_text(
+                "Tʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴜsᴇᴅ ɪɴ ᴛʜᴇ @ᴅʀᴀɢʙᴀᴄᴋᴜᴘ .."
+            )
+
     upl = stats_buttons(_, True)
     await message.reply_photo(
         photo=config.STATS_IMG_URL,
@@ -36,10 +40,12 @@ async def stats_global(client, message: Message, _):
 @app.on_callback_query(filters.regex("stats_back") & ~BANNED_USERS)
 @languageCB
 async def home_stats(client, CallbackQuery, _):
-    # Restrict access to only the group with username @dragbackup
-    if CallbackQuery.message.chat.username != "dragbackup":
-        return await CallbackQuery.answer("Tʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴜsᴇᴅ ɪɴ ᴛʜᴇ @ᴅʀᴀɢʙᴀᴄᴋᴜᴘ ɢʀᴏᴜᴘ.**", show_alert=True)
-    
+    # Allow sudo users and owner to use it from anywhere
+    if CallbackQuery.from_user.id not in SUDOERS and CallbackQuery.from_user.id != OWNER_ID:
+        # Restrict access to only the group with username @dragbackup
+        if CallbackQuery.message.chat.username != "dragbackup":
+            return await CallbackQuery.answer("Tʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴜsᴇᴅ ɪɴ ᴛʜᴇ @ᴅʀᴀɢʙᴀᴄᴋᴜᴘ ɢʀᴏᴜᴘ.", show_alert=True)
+
     upl = stats_buttons(_, True)
     await CallbackQuery.edit_message_text(
         text=_["gstats_2"].format(app.mention),
@@ -50,9 +56,11 @@ async def home_stats(client, CallbackQuery, _):
 @app.on_callback_query(filters.regex("TopOverall") & ~BANNED_USERS)
 @languageCB
 async def overall_stats(client, CallbackQuery, _):
-    # Restrict access to only the group with username @dragbackup
-    if CallbackQuery.message.chat.username != "dragbackup":
-        return await CallbackQuery.answer("Tʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴜsᴇᴅ ɪɴ ᴛʜᴇ @ᴅʀᴀɢʙᴀᴄᴋᴜᴘ ɢʀᴏᴜᴘ.**", show_alert=True)
+    # Allow sudo users and owner to use it from anywhere
+    if CallbackQuery.from_user.id not in SUDOERS and CallbackQuery.from_user.id != OWNER_ID:
+        # Restrict access to only the group with username @dragbackup
+        if CallbackQuery.message.chat.username != "dragbackup":
+            return await CallbackQuery.answer("Tʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴜsᴇᴅ ɪɴ ᴛʜᴇ @ᴅʀᴀɢʙᴀᴄᴋᴜᴘ ɢʀᴏᴜᴘ.", show_alert=True)
 
     await CallbackQuery.answer()
     upl = back_stats_buttons(_)
@@ -86,10 +94,12 @@ async def overall_stats(client, CallbackQuery, _):
 @app.on_callback_query(filters.regex("bot_stats_sudo"))
 @languageCB
 async def bot_stats(client, CallbackQuery, _):
-    # Restrict access to only the group with username @dragbackup
-    if CallbackQuery.message.chat.username != "dragbackup":
-        return await CallbackQuery.answer("Tʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴜsᴇᴅ ɪɴ ᴛʜᴇ @ᴅʀᴀɢʙᴀᴄᴋᴜᴘ ɢʀᴏᴜᴘ.**", show_alert=True)
-    
+    # Allow sudo users and owner to use it from anywhere
+    if CallbackQuery.from_user.id not in SUDOERS and CallbackQuery.from_user.id != OWNER_ID:
+        # Restrict access to only the group with username @dragbackup
+        if CallbackQuery.message.chat.username != "dragbackup":
+            return await CallbackQuery.answer("Tʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴜsᴇᴅ ɪɴ ᴛʜᴇ @ᴅʀᴀɢʙᴀᴄᴋᴜᴘ ɢʀᴏᴜᴘ.", show_alert=True)
+
     upl = back_stats_buttons(_)
     try:
         await CallbackQuery.answer()

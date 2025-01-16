@@ -23,7 +23,7 @@ from config import BANNED_USERS, OWNER_ID
 async def stats_global(client, message: Message, _):
     # Restrict access to only the group with username @dragbackup
     if message.chat.username != "dragbackup":
-        return await message.reply_text("Tʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴜsᴇᴅ ɪɴ ᴛʜᴇ @ᴅʀᴀɢʙᴀᴄᴋᴜᴘ ɢʀᴏᴜᴘ.**")
+        return await message.reply_text("Tʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴜsᴇᴅ ɪɴ ᴛʜᴇ @ᴅʀᴀɢʙᴀᴄᴋᴜᴘ ɢʀᴏᴜᴘ..")
     
     upl = stats_buttons(_, True)
     await message.reply_photo(

@@ -197,7 +197,7 @@ async def play_commnd(
                     details, track_id = await Spotify.track(url)
                 except:
                     return await mystic.edit_text(_["play_3"])
-                streamtype = "youtube"
+                streamtype = "spotify"
                 img = details["thumb"]
                 cap = _["play_10"].format(details["title"], details["duration_min"])
             elif "playlist" in url:

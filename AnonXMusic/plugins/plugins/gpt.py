@@ -72,33 +72,3 @@ async def set_role_handler(client, message):
     else:
         await message.reply_text("Exᴀᴍᴘʟᴇ ᴜsᴀɢᴇ: /sᴇᴛʀᴏʟᴇ Yᴏᴜ ᴀʀᴇ ᴀ ғʀɪᴇɴᴅʟʏ AI.")
 
-@app.on_message(filters.command(["generate_image", "image"]))
-async def generate_image_handler(client, message):
-    chat_id = message.chat.id
-
-    # Indicate typing action
-    await app.send_chat_action(chat_id, ChatAction.UPLOAD_PHOTO)
-
-    # Retrieve the user's input
-    if len(message.command) > 1:
-        prompt = " ".join(message.command[1:])
-    else:
-        await message.reply_text("Exᴀᴍᴘʟᴇ ᴜsᴀɢᴇ: /ɢᴇɴᴇʀᴀᴛᴇ_ɪᴍᴀɢᴇ A ғʟᴏᴀᴛɪɴɢ ᴄɪᴛʏ ɪɴ ᴛʜᴇ ᴄʟᴏᴜᴅs.")
-        return
-
-    try:
-        # Call the OpenAI API to generate the image
-        response = openai.Image.create(
-            prompt=prompt,
-            n=1,
-            size="1024x1024"
-        )
-
-        # Get the image URL
-        image_url = response["data"][0]["url"]
-
-        # Send the image URL as a message
-        await message.reply_photo(photo=image_url, caption=f"Image Prompt: {prompt}")
-
-    except Exception as e:
-        await message.reply_text(f"» Error: {str(e)}. Please try again later.")

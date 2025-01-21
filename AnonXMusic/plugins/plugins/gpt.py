@@ -4,7 +4,7 @@ from pyrogram.enums import ChatAction
 from AnonXMusic import app
 
 # Set your OpenAI API key
-openai.api_key = "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"
+openai.api_key = "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"
 # To store conversations (per user basis, using a dictionary for simplicity)
 user_conversations = {}
 

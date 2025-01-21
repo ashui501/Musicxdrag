@@ -1,296 +1,274 @@
-from io import BytesIO
-from pyrogram import Client, filters
-from pyrogram.types import Message
-from AnonXMusic import app
-from httpx import AsyncClient, Timeout
+# <============================================== IMPORTS =========================================================>
+import base64
+import os
+from random import choice
+
+from aiohttp import ContentTypeError
+from PIL import Image
+from telethon.tl import types
+from telethon.utils import get_display_name, get_peer_id
+
+from AnonXMusic import DEV_USERS
+from AnonXMusic.events import register
+
+# <=======================================================================================================>
 
 
-fetch = AsyncClient(
-    http2=True,
-    verify=False,
-    headers={
-        "Accept-Language": "id-ID",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edge/107.0.1418.42",
-    },
-    timeout=Timeout(20),
-)
-
-
-class QuotlyException(Exception):
-    pass
-
-
-async def get_message_sender_id(ctx: Message):
-    if ctx.forward_date:
-        if ctx.forward_sender_name:
-            return 1
-        elif ctx.forward_from:
-            return ctx.forward_from.id
-        elif ctx.forward_from_chat:
-            return ctx.forward_from_chat.id
-        else:
-            return 1
-    elif ctx.from_user:
-        return ctx.from_user.id
-    elif ctx.sender_chat:
-        return ctx.sender_chat.id
-    else:
-        return 1
-
-
-async def get_message_sender_name(ctx: Message):
-    if ctx.forward_date:
-        if ctx.forward_sender_name:
-            return ctx.forward_sender_name
-        elif ctx.forward_from:
-            return (
-                f"{ctx.forward_from.first_name} {ctx.forward_from.last_name}"
-                if ctx.forward_from.last_name
-                else ctx.forward_from.first_name
-            )
-
-        elif ctx.forward_from_chat:
-            return ctx.forward_from_chat.title
-        else:
-            return ""
-    elif ctx.from_user:
-        if ctx.from_user.last_name:
-            return f"{ctx.from_user.first_name} {ctx.from_user.last_name}"
-        else:
-            return ctx.from_user.first_name
-    elif ctx.sender_chat:
-        return ctx.sender_chat.title
-    else:
-        return ""
-
-
-async def get_custom_emoji(ctx: Message):
-    if ctx.forward_date:
-        return (
-            ""
-            if ctx.forward_sender_name
-            or not ctx.forward_from
-            and ctx.forward_from_chat
-            or not ctx.forward_from
-            else ctx.forward_from.emoji_status.custom_emoji_id
-        )
-
-    return ctx.from_user.emoji_status.custom_emoji_id if ctx.from_user else ""
-
-
-async def get_message_sender_username(ctx: Message):
-    if ctx.forward_date:
-        if (
-            not ctx.forward_sender_name
-            and not ctx.forward_from
-            and ctx.forward_from_chat
-            and ctx.forward_from_chat.username
-        ):
-            return ctx.forward_from_chat.username
-        elif (
-            not ctx.forward_sender_name
-            and not ctx.forward_from
-            and ctx.forward_from_chat
-            or ctx.forward_sender_name
-            or not ctx.forward_from
-        ):
-            return ""
-        else:
-            return ctx.forward_from.username or ""
-    elif ctx.from_user and ctx.from_user.username:
-        return ctx.from_user.username
-    elif (
-        ctx.from_user
-        or ctx.sender_chat
-        and not ctx.sender_chat.username
-        or not ctx.sender_chat
-    ):
-        return ""
-    else:
-        return ctx.sender_chat.username
-
-
-async def get_message_sender_photo(ctx: Message):
-    if ctx.forward_date:
-        if (
-            not ctx.forward_sender_name
-            and not ctx.forward_from
-            and ctx.forward_from_chat
-            and ctx.forward_from_chat.photo
-        ):
-            return {
-                "small_file_id": ctx.forward_from_chat.photo.small_file_id,
-                "small_photo_unique_id": ctx.forward_from_chat.photo.small_photo_unique_id,
-                "big_file_id": ctx.forward_from_chat.photo.big_file_id,
-                "big_photo_unique_id": ctx.forward_from_chat.photo.big_photo_unique_id,
-            }
-        elif (
-            not ctx.forward_sender_name
-            and not ctx.forward_from
-            and ctx.forward_from_chat
-            or ctx.forward_sender_name
-            or not ctx.forward_from
-        ):
-            return ""
-        else:
-            return (
-                {
-                    "small_file_id": ctx.forward_from.photo.small_file_id,
-                    "small_photo_unique_id": ctx.forward_from.photo.small_photo_unique_id,
-                    "big_file_id": ctx.forward_from.photo.big_file_id,
-                    "big_photo_unique_id": ctx.forward_from.photo.big_photo_unique_id,
-                }
-                if ctx.forward_from.photo
-                else ""
-            )
-
-    elif ctx.from_user and ctx.from_user.photo:
-        return {
-            "small_file_id": ctx.from_user.photo.small_file_id,
-            "small_photo_unique_id": ctx.from_user.photo.small_photo_unique_id,
-            "big_file_id": ctx.from_user.photo.big_file_id,
-            "big_photo_unique_id": ctx.from_user.photo.big_photo_unique_id,
-        }
-    elif (
-        ctx.from_user
-        or ctx.sender_chat
-        and not ctx.sender_chat.photo
-        or not ctx.sender_chat
-    ):
-        return ""
-    else:
-        return {
-            "small_file_id": ctx.sender_chat.photo.small_file_id,
-            "small_photo_unique_id": ctx.sender_chat.photo.small_photo_unique_id,
-            "big_file_id": ctx.sender_chat.photo.big_file_id,
-            "big_photo_unique_id": ctx.sender_chat.photo.big_photo_unique_id,
-        }
-
-
-async def get_text_or_caption(ctx: Message):
-    if ctx.text:
-        return ctx.text
-    elif ctx.caption:
-        return ctx.caption
-    else:
-        return ""
-
-
-async def pyrogram_to_quotly(messages, is_reply):
-    if not isinstance(messages, list):
-        messages = [messages]
-    payload = {
-        "type": "quote",
-        "format": "png",
-        "backgroundColor": "#1b1429",
-        "messages": [],
+# <================================================ CLASS & FUNCTION =======================================================>
+class Quotly:
+    _API = "https://bot.lyo.su/quote/generate"
+    _entities = {
+        types.MessageEntityPhone: "phone_number",
+        types.MessageEntityMention: "mention",
+        types.MessageEntityBold: "bold",
+        types.MessageEntityCashtag: "cashtag",
+        types.MessageEntityStrike: "strikethrough",
+        types.MessageEntityHashtag: "hashtag",
+        types.MessageEntityEmail: "email",
+        types.MessageEntityMentionName: "text_mention",
+        types.MessageEntityUnderline: "underline",
+        types.MessageEntityUrl: "url",
+        types.MessageEntityTextUrl: "text_link",
+        types.MessageEntityBotCommand: "bot_command",
+        types.MessageEntityCode: "code",
+        types.MessageEntityPre: "pre",
     }
 
-    for message in messages:
-        the_message_dict_to_append = {}
-        if message.entities:
-            the_message_dict_to_append["entities"] = [
-                {
-                    "type": entity.type.name.lower(),
-                    "offset": entity.offset,
-                    "length": entity.length,
-                }
-                for entity in message.entities
-            ]
-        elif message.caption_entities:
-            the_message_dict_to_append["entities"] = [
-                {
-                    "type": entity.type.name.lower(),
-                    "offset": entity.offset,
-                    "length": entity.length,
-                }
-                for entity in message.caption_entities
-            ]
-        else:
-            the_message_dict_to_append["entities"] = []
-        the_message_dict_to_append["chatId"] = await get_message_sender_id(message)
-        the_message_dict_to_append["text"] = await get_text_or_caption(message)
-        the_message_dict_to_append["avatar"] = True
-        the_message_dict_to_append["from"] = {}
-        the_message_dict_to_append["from"]["id"] = await get_message_sender_id(message)
-        the_message_dict_to_append["from"]["name"] = await get_message_sender_name(
-            message
-        )
-        the_message_dict_to_append["from"]["username"] = (
-            await get_message_sender_username(message)
-        )
-        the_message_dict_to_append["from"]["type"] = message.chat.type.name.lower()
-        the_message_dict_to_append["from"]["photo"] = await get_message_sender_photo(
-            message
-        )
-        if message.reply_to_message and is_reply:
-            the_message_dict_to_append["replyMessage"] = {
-                "name": await get_message_sender_name(message.reply_to_message),
-                "text": await get_text_or_caption(message.reply_to_message),
-                "chatId": await get_message_sender_id(message.reply_to_message),
-            }
-        else:
-            the_message_dict_to_append["replyMessage"] = {}
-        payload["messages"].append(the_message_dict_to_append)
-    r = await fetch.post("https://bot.lyo.su/quote/generate.png", json=payload)
-    if not r.is_error:
-        return r.read()
-    else:
-        raise QuotlyException(r.json())
-
-
-def isArgInt(txt) -> list:
-    count = txt
-    try:
-        count = int(count)
-        return [True, count]
-    except ValueError:
-        return [False, 0]
-
-
-@app.on_message(filters.command(["q", "r"]) & filters.reply)
-async def msg_quotly_cmd(self: app, ctx: Message):
-    is_reply = False
-    if ctx.command[0].endswith("r"):
-        is_reply = True
-    if len(ctx.text.split()) > 1:
-        check_arg = isArgInt(ctx.command[1])
-        if check_arg[0]:
-            if check_arg[1] < 2 or check_arg[1] > 10:
-                return await ctx.reply_msg("Invalid range", del_in=6)
-            try:
-                messages = [
-                    i
-                    for i in await self.get_messages(
-                        chat_id=ctx.chat.id,
-                        message_ids=range(
-                            ctx.reply_to_message.id,
-                            ctx.reply_to_message.id + (check_arg[1] + 5),
-                        ),
-                        replies=-1,
+    async def _format_quote(self, event, reply=None, sender=None, type_="private"):
+        async def telegraph(file_):
+            file = file_ + ".png"
+            Image.open(file_).save(file, "PNG")
+            files = {"file": open(file, "rb").read()}
+            uri = (
+                "https://telegra.ph"
+                + (
+                    await async_searcher(
+                        "https://telegra.ph/upload", post=True, data=files, re_json=True
                     )
-                    if not i.empty and not i.media
-                ]
-            except Exception:
-                return await ctx.reply_text("❌")
-            try:
-                make_quotly = await pyrogram_to_quotly(messages, is_reply=is_reply)
-                bio_sticker = BytesIO(make_quotly)
-                bio_sticker.name = "misskatyquote_sticker.webp"
-                return await ctx.reply_sticker(bio_sticker)
-            except Exception:
-                return await ctx.reply_msg("❌")
-    try:
-        messages_one = await self.get_messages(
-            chat_id=ctx.chat.id, message_ids=ctx.reply_to_message.id, replies=-1
+                )[0]["src"]
+            )
+            os.remove(file)
+            os.remove(file_)
+            return uri
+
+        reply = (
+            {
+                "name": get_display_name(reply.sender) or "Deleted Account",
+                "text": reply.raw_text,
+                "chatId": reply.chat_id,
+            }
+            if reply
+            else {}
         )
-        messages = [messages_one]
-    except Exception:
-        return await ctx.reply_msg("❌")
+
+        is_fwd = event.fwd_from
+        name, last_name = None, None
+
+        if sender and sender.id not in DEV_USERS:
+            id_ = get_peer_id(sender)
+            name = get_display_name(sender)
+        elif not is_fwd:
+            id_ = event.sender_id
+            sender = await event.get_sender()
+            name = get_display_name(sender)
+        else:
+            id_, sender = None, None
+            name = is_fwd.from_name
+            if is_fwd.from_id:
+                id_ = get_peer_id(is_fwd.from_id)
+                try:
+                    sender = await event.client.get_entity(id_)
+                    name = get_display_name(sender)
+                except ValueError:
+                    pass
+        if sender and hasattr(sender, "last_name"):
+            last_name = sender.last_name
+
+        entities = (
+            [
+                {
+                    "type": self._entities[type(entity)],
+                    **{k: v for k, v in entity.to_dict().items() if k != "_"},
+                }
+                for entity in event.entities
+            ]
+            if event.entities
+            else []
+        )
+
+        message = {
+            "entities": entities,
+            "chatId": id_,
+            "avatar": True,
+            "from": {
+                "id": id_,
+                "first_name": (name or (sender.first_name if sender else None))
+                or "Deleted Account",
+                "last_name": last_name,
+                "username": sender.username if sender else None,
+                "language_code": "en",
+                "title": name,
+                "name": name or "Unknown",
+                "type": type_,
+            },
+            "text": event.raw_text,
+            "replyMessage": reply,
+        }
+
+        if event.document and event.document.thumbs:
+            file_ = await event.download_media(thumb=-1)
+            uri = await telegraph(file_)
+            message["media"] = {"url": uri}
+
+        return message
+
+    async def create_quotly(
+        self,
+        event,
+        url="https://quote-api.example.com/generate",
+        reply={},
+        bg=None,
+        sender=None,
+        OQAPI=True,
+        file_name="quote.webp",
+    ):
+        if not isinstance(event, list):
+            event = [event]
+        if OQAPI:
+            url = Quotly._API
+        bg = bg or "#1b1429"
+        content = {
+            "type": "quote",
+            "format": "webp",
+            "backgroundColor": bg,
+            "width": 512,
+            "height": 768,
+            "scale": 2,
+            "messages": [
+                await self._format_quote(message, reply=reply, sender=sender)
+                for message in event
+            ],
+        }
+        try:
+            request = await async_searcher(url, post=True, json=content, re_json=True)
+        except ContentTypeError as er:
+            if url != self._API:
+                return await self.create_quotly(
+                    self._API, post=True, json=content, re_json=True
+                )
+            raise er
+
+        if request.get("ok"):
+            with open(file_name, "wb") as file:
+                image = base64.decodebytes(request["result"]["image"].encode("utf-8"))
+                file.write(image)
+            return file_name
+        raise Exception(str(request))
+
+
+quotly = Quotly()
+
+
+async def async_searcher(
+    url: str,
+    post: bool = None,
+    headers: dict = None,
+    params: dict = None,
+    json: dict = None,
+    data: dict = None,
+    ssl=None,
+    re_json: bool = False,
+    re_content: bool = False,
+    real: bool = False,
+    *args,
+    **kwargs
+):
     try:
-        make_quotly = await pyrogram_to_quotly(messages, is_reply=is_reply)
-        bio_sticker = BytesIO(make_quotly)
-        bio_sticker.name = "misskatyquote_sticker.webp"
-        return await ctx.reply_sticker(bio_sticker)
-    except Exception as e:
-        return await ctx.reply_msg(f"ERROR: {e}")
+        import aiohttp
+    except ImportError:
+        raise DependencyMissingError(
+            "'aiohttp' is not installed!\nThis function requires aiohttp to be installed."
+        )
+
+    async with aiohttp.ClientSession(headers=headers) as client:
+        data = await (
+            client.post(url, json=json, data=data, ssl=ssl, *args, **kwargs)
+            if post
+            else client.get(url, params=params, ssl=ssl, *args, **kwargs)
+        )
+        return await (
+            data.json() if re_json else data.read() if re_content else data.text()
+        )
+
+
+@register(pattern="^/q(?: |$)(.*)")
+async def quott_(event):
+    match = event.pattern_match.group(1).strip()
+    if not event.is_reply:
+        return await event.reply("Please reply to a message.")
+
+    msg = await event.reply("Creating quote, please wait.")
+    reply = await event.get_reply_message()
+    replied_to, reply_ = None, None
+
+    if match:
+        spli_ = match.split(maxsplit=1)
+        if (spli_[0] in ["r", "reply"]) or (
+            spli_[0].isdigit() and int(spli_[0]) in range(1, 21)
+        ):
+            if spli_[0].isdigit():
+                if not event.client.is_bot:
+                    reply_ = await event.client.get_messages(
+                        event.chat_id,
+                        min_id=event.reply_to_msg_id - 1,
+                        reverse=True,
+                        limit=int(spli_[0]),
+                    )
+                else:
+                    id_ = reply.id
+                    reply_ = []
+                    for msg_ in range(id_, id_ + int(spli_[0])):
+                        msh = await event.client.get_messages(event.chat_id, ids=msg_)
+                        if msh:
+                            reply_.append(msh)
+            else:
+                replied_to = await reply.get_reply_message()
+            try:
+                match = spli_[1]
+            except IndexError:
+                match = None
+
+    user = None
+
+    if not reply_:
+        reply_ = reply
+
+    if match:
+        match = match.split(maxsplit=1)
+
+    if match:
+        if match[0].startswith("@") or match[0].isdigit():
+            try:
+                match_ = await event.client.parse_id(match[0])
+                user = await event.client.get_entity(match_)
+            except ValueError:
+                pass
+            match = match[1] if len(match) == 2 else None
+        else:
+            match = match[0]
+
+    if match == "random":
+        match = choice(all_col)
+
+    try:
+        file = await quotly.create_quotly(
+            reply_, bg=match, reply=replied_to, sender=user
+        )
+    except Exception as er:
+        return await msg.edit(str(er))
+
+    message = await reply.reply("", file=file)
+    os.remove(file)
+    await msg.delete()
+    return message
+

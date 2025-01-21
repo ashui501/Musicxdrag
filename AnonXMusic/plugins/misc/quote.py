@@ -8,7 +8,6 @@ from PIL import Image
 from telethon.tl import types
 from telethon.utils import get_display_name, get_peer_id
 
-from AnonXMusic import DEV_USERS
 from AnonXMusic.events import register
 
 # <=======================================================================================================>

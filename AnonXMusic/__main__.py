@@ -35,7 +35,7 @@ async def init():
         pass
     await app.start()
     for all_module in ALL_MODULES:
-        importlib.import_module("AɴᴏɴXMᴜsɪᴄ.ᴘʟᴜɢɪɴs" + all_module)
+        importlib.import_module("AnonXMusic.ᴘʟᴜɢɪɴs" + all_module)
     LOGGER("AnonXMusic.plugins").info("Sᴜᴄᴄᴇssғᴜʟʟʏ Iᴍᴘᴏʀᴛᴇᴅ Mᴏᴅᴜʟᴇs...")
     await userbot.start()
     await Anony.start()

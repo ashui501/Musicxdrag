@@ -21,7 +21,7 @@ async def init():
         and not config.STRING4
         and not config.STRING5
     ):
-        LOGGER(__name__).error("Assistant client variables not defined, exiting...")
+        LOGGER(__name__).error("Assɪsᴛᴀɴᴛ ᴄʟɪᴇɴᴛ ᴠᴀʀɪᴀʙʟᴇs ɴᴏᴛ ᴅᴇғɪɴᴇᴅ, ᴇxɪᴛɪɴɢ...")
         exit()
     await sudo()
     try:
@@ -35,26 +35,26 @@ async def init():
         pass
     await app.start()
     for all_module in ALL_MODULES:
-        importlib.import_module("AnonXMusic.plugins" + all_module)
-    LOGGER("AnonXMusic.plugins").info("Successfully Imported Modules...")
+        importlib.import_module("AɴᴏɴXMᴜsɪᴄ.ᴘʟᴜɢɪɴs" + all_module)
+    LOGGER("AnonXMusic.plugins").info("Sᴜᴄᴄᴇssғᴜʟʟʏ Iᴍᴘᴏʀᴛᴇᴅ Mᴏᴅᴜʟᴇs...")
     await userbot.start()
     await Anony.start()
     try:
         await Anony.stream_call("https://telegra.ph/file/cba632240b79207bf8a9c.mp4")
     except NoActiveGroupCall:
         LOGGER("AnonXMusic").error(
-            "Please turn on the videochat of your log group\channel.\n\nStopping Bot..."
+            "Pʟᴇᴀsᴇ ᴛᴜʀɴ ᴏɴ ᴛʜᴇ ᴠɪᴅᴇᴏᴄʜᴀᴛ ᴏғ ʏᴏᴜʀ ʟᴏɢ ɢʀᴏᴜᴘ\ᴄʜᴀɴɴᴇʟ\n\nsᴛᴏᴘᴘɪɴɢ Bᴏᴛ..."
         )
         exit()
     except:
         pass
     await Anony.decorators()
-    LOGGER("AnonXMusic").info("╔═════ஜ۩۞۩ஜ════╗\n  ♨️𝗠𝗔𝗗𝗘 𝗕𝗬 𝐂𝐡𝐢𝐧𝐧𝐚 ♨️\n╚═════ஜ۩۞۩ஜ════╝")
+    LOGGER("AnonXMusic").info("╔═════ஜ۩۞۩ஜ════╗\n  𝑴𝑨𝑫𝑬 𝑩𝒀 𝑫𝑹𝑨𝑮𝑮𝑮 \n╚═════ஜ۩۞۩ஜ════╝")
         
     await idle()
     await app.stop()
     await userbot.stop()
-    LOGGER("AnonXMusic").info("╔═════ஜ۩۞۩ஜ════╗\n  ♨️𝗠𝗔𝗗𝗘 𝗕𝗬 𝐂𝐡𝐢𝐧𝐧𝐚 ♨️\n╚═════ஜ۩۞۩ஜ════╝")
+    LOGGER("AnonXMusic").info("╔═════ஜ۩۞۩ஜ════╗\n  𝑴𝑨𝑫𝑬 𝑩𝒀 𝑫𝑹𝑨𝑮𝑮𝑮 \n╚═════ஜ۩۞۩ஜ════╝")
 
 
 if __name__ == "__main__":

@@ -32,10 +32,10 @@ async def handle_media(client: Client, message: Message):
             file = await client.download_media(message.photo.file_id)
             downloaded_file = file
 
-            catbox_url = await upload_to_catbox(downloaded_file)
+            catbox_url = await upload_to_anonfiles(downloaded_file)  # Changed here
             inline_button = InlineKeyboardButton("ʟɪɴᴋ", url=catbox_url)
             await message.reply(
-                "ᴍᴇᴅɪᴀ ᴜᴘʟᴏᴀᴅᴇᴅ ᴛᴏ ᴄᴀᴛʙᴏx.",
+                "ᴍᴇᴅɪᴀ ᴜᴘᴏᴀᴅᴇᴅ ᴛᴏ ᴀɴᴏɴғɪʟᴇs.",
                 reply_markup=InlineKeyboardMarkup([[inline_button]])
             )
             os.remove(downloaded_file)
@@ -45,10 +45,10 @@ async def handle_media(client: Client, message: Message):
             file = await client.download_media(video.file_id)
             downloaded_file = file
 
-            catbox_url = await upload_to_catbox(downloaded_file)
+            catbox_url = await upload_to_anonfiles(downloaded_file)  # Changed here
             inline_button = InlineKeyboardButton("ʟɪɴᴋ", url=catbox_url)
             await message.reply(
-                "ᴍᴇᴅɪᴀ ᴜᴘᴏᴀᴅᴇᴅ ᴛᴏ ᴄᴀᴛʙᴏx.",
+                "ᴍᴇᴅɪᴀ ᴜᴘᴏᴀᴅᴇᴅ ᴛᴏ ᴀɴᴏɴғɪʟᴇs.",
                 reply_markup=InlineKeyboardMarkup([[inline_button]])
             )
             os.remove(downloaded_file)
@@ -58,16 +58,17 @@ async def handle_media(client: Client, message: Message):
             file = await client.download_media(document.file_id)
             downloaded_file = file
 
-            catbox_url = await upload_to_catbox(downloaded_file)
+            catbox_url = await upload_to_anonfiles(downloaded_file)  # Changed here
             inline_button = InlineKeyboardButton("ʟɪɴᴋ", url=catbox_url)
             await message.reply(
-                "ᴍᴇᴅɪᴀ ᴜᴘᴏᴀᴅᴇᴅ ᴛᴏ ᴄᴀᴛʙᴏx.",
+                "ᴍᴇᴅɪᴀ ᴜᴘᴏᴀᴅᴇᴅ ᴛᴏ ᴀɴᴏɴғɪʟᴇs.",
                 reply_markup=InlineKeyboardMarkup([[inline_button]])
             )
             os.remove(downloaded_file)
 
     except Exception as e:
         await message.reply(f"Failed to upload file: {e}")
+
 
 @app.on_message(filters.command(["stgm"]))
 async def upload_command(client, message):

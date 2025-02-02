@@ -4,7 +4,7 @@ from AnonXMusic import app
 
 def upload_to_catbox(file_path):
     """Uploads a file to Catbox and returns the file URL."""
-    url = "https://catbox.moe/user/api.php"
+    url = "https://envs.sh/"
     with open(file_path, "rb") as file:
         response = requests.post(
             url,
@@ -22,7 +22,7 @@ def ul(_, message):
     if not reply or not reply.media:
         return message.reply("Please reply to an image or media to upload.")
 
-    i = message.reply("**Downloading...**")
+    i = message.reply("Downloading...")
     path = reply.download()
 
     if not path:

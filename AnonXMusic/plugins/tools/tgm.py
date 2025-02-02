@@ -1,10 +1,11 @@
 import requests
 from pyrogram import filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from AnonXMusic import app
 
 def upload_to_catbox(file_path):
     """Uploads a file to Catbox and returns the file URL."""
-    url = "https://api.anonfiles.com/upload"
+    url = "https://catbox.moe/user/api.php"
     with open(file_path, "rb") as file:
         response = requests.post(
             url,
@@ -29,7 +30,14 @@ def ul(_, message):
         return i.edit("Failed to download the file.")
 
     try:
+        # Upload to Catbox
         file_url = upload_to_catbox(path)
-        i.edit(f'Your Catbox [link]({file_url})', disable_web_page_preview=True)
+
+        # Create a button with the Catbox link
+        button = InlineKeyboardButton("Click to view the file", url=file_url)
+        markup = InlineKeyboardMarkup([[button]])
+
+        # Send a reply with the button
+        i.edit("Your file has been uploaded to Catbox:", reply_markup=markup)
     except Exception as e:
         i.edit(f"An error occurred: {str(e)}")

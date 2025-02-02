@@ -4,7 +4,7 @@ from AnonXMusic import app
 
 def upload_to_catbox(file_path):
     """Uploads a file to Catbox and returns the file URL."""
-    url = "https://envs.sh/"
+    url = "https://api.anonfiles.com/upload"
     with open(file_path, "rb") as file:
         response = requests.post(
             url,

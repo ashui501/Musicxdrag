@@ -1,39 +1,40 @@
 import asyncio
-from pyspeedtest import SpeedTest  # Import SpeedTest from pyspeedtest
+from pyspeedtest import SpeedTest
 from pyrogram import filters
 from pyrogram.types import Message
 
-from AnonXMusic import app
-from AnonXMusic.misc import SUDOERS
-from AnonXMusic.utils.decorators.language import language
+from AnonXMusic import app  # Make sure this import is correct
+from AnonXMusic.misc import SUDOERS  # Make sure this import is correct
+from AnonXMusic.utils.decorators.language import language  # Make sure this import is correct
 
 
 def testspeed(m, _):
     try:
-        st = SpeedTest()  # Create a SpeedTest object
-        st.get_best_server()
-        m.edit_text(_["server_12"])
+        st = SpeedTest()
+        m.edit_text(_["server_12"])  # Indicate starting download test
         download = st.download()  # in bits per second
-        m.edit_text(_["server_13"])
-        upload = st.upload()  # in bits per second
+        m.edit_text(_["server_13"])  # Indicate starting upload test
+        upload = st.upload()      # in bits per second
         ping = st.ping()
-        # pyspeedtest doesn't directly provide a shareable image.  We'll handle this differently.
 
         result = {
-            "client": {"isp": st.isp},  # Get ISP information if pyspeedtest provides it
-            "client": {"country": ""},  # Add a placeholder for country
-            "server": {"name": st.best["host"]},
-            "server": {"country": ""},  # Add a placeholder for country
-            "server": {"cc": ""},      # Add a placeholder for country code
-            "server": {"sponsor": ""}, # Add a placeholder for sponsor
+            "client": {"isp": st.isp if hasattr(st, 'isp') else "N/A"},  # ISP information (if available)
+            "client": {"country": "N/A"},  # Placeholder for country
+            "server": {"name": "N/A"},  # Placeholder for server name
+            "server": {"country": "N/A"},  # Placeholder for country
+            "server": {"cc": "N/A"},      # Placeholder for country code
+            "server": {"sponsor": "N/A"}, # Placeholder for sponsor
             "server": {"latency": ping},
             "download": download,
             "upload": upload,
             "ping": ping,
         }
         return result
+
     except Exception as e:
-        return {"error": str(e)}
+        error_message = f"Error during speed test: {e}"  # More descriptive error
+        print(error_message)  # Print to console for debugging
+        return {"error": error_message}  # Return error dictionary
 
 
 @app.on_message(
@@ -52,22 +53,19 @@ async def speedtest_function(client, message: Message, _):
         await m.edit_text(f"<code>{result['error']}</code>")
         return
 
-    download_mbps = result["download"] / 1000000
-    upload_mbps = result["upload"] / 1000000
+    download_mbps = result.get("download", 0) / 1000000  # Use .get() with default
+    upload_mbps = result.get("upload", 0) / 1000000  # Use .get() with default
+    ping = result.get("ping", 0)
 
-    output = _["server_15"].format(
-        result["client"]["isp"],
-        result["client"]["country"], # These will likely be empty with pyspeedtest
-        result["server"]["name"],
-        result["server"]["country"], # These will likely be empty with pyspeedtest
-        result["server"]["cc"],      # These will likely be empty with pyspeedtest
-        result["server"]["sponsor"], # These will likely be empty with pyspeedtest
-        result["server"]["latency"],
-        result["ping"],
+    output = _["server_15"].format(  # Format output string.  Make sure your _["server_15"] key exists in your language file.
+        result["client"].get("isp", "N/A"),  # Use .get() with default
+        result["client"].get("country", "N/A"),
+        result["server"].get("name", "N/A"),
+        result["server"].get("country", "N/A"),
+        result["server"].get("cc", "N/A"),
+        result["server"].get("sponsor", "N/A"),
+        ping,  # Use ping directly
     )
 
-    # Since pyspeedtest doesn't provide a shareable image, send a text message with the results
-    await m.edit_text(output)  # Edit the original message with the formatted output
-
-    # Optionally, you could add download/upload speeds in Mbps to the output
+    await m.edit_text(output)
     await m.edit_text(f"{output}\nDownload: {download_mbps:.2f} Mbps\nUpload: {upload_mbps:.2f} Mbps")

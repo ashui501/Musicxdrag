@@ -1,5 +1,6 @@
 import os
 from datetime import timedelta
+from pyrogram.enums import ParseMode
 
 import wget
 from pyrogram import Client
@@ -56,13 +57,13 @@ async def vsong_cmd(client, message):
             duration=duration,
             supports_streaming=True,
             caption=(
-                f"<b>💡 Information {title}</b>\n\n"
-                f"<b>🏷 Name:</b> {title}\n"
-                f"<b>🧭 Duration:</b> {timedelta(seconds=duration)}\n"
-                f"<b>👀 Views:</b> {views:,}\n"
-                f"<b>📢 Channel:</b> {channel}\n"
-                f"<b>🔗 Link:</b> <a href='{link}'>YouTube</a>\n\n"
-                f"<b>⚡ Powered by:</b> {channel}"
+                f"<blockquote><b> Information {title}</b></blockquote>\n\n"
+                f"<blockquote><b> Name:</b> {title}\n"
+                f"<b> Duration:</b> {timedelta(seconds=duration)}\n"
+                f"<b> Views:</b> {views:,}\n"
+                f"<b> Channel:</b> {channel}\n"
+                f"<b> Link:</b> <a href='{link}'>YouTube</a></blockquote>\n\n"
+                f"<blockquote><b>⚡ Powered by: @haatsoja</b></blockquote> "
             ),
             reply_to_message_id=message.id,
         )
@@ -126,14 +127,15 @@ async def song_cmd(client, message):
             performer=channel,
             duration=duration,
             caption=(
-                f"<b>💡 Information {title}</b>\n\n"
-                f"<b>🏷 Name:</b> {title}\n"
-                f"<b>🧭 Duration:</b> {timedelta(seconds=duration)}\n"
-                f"<b>👀 Views:</b> {views:,}\n"
-                f"<b>📢 Channel:</b> {channel}\n"
-                f"<b>🔗 Link:</b> <a href='{link}'>YouTube</a>\n\n"
-                f"<b>⚡ Powered by:</b> {channel}"
+                f"<blockquote><b> Information {title}</b></blockquote>\n\n"
+                f"<blockquote><b> Name:</b> {title}\n"
+                f"<b> Duration:</b> {timedelta(seconds=duration)}\n"
+                f"<b> Views:</b> {views:,}\n"
+                f"<b> Channel:</b> {channel}\n"
+                f"<b> Link:</b> <a href='{link}'>YouTube</a></blockquote>\n\n"
+                f"<blockquote><b>⚡ Powered by: @haatsoja</b></blockquote>"
             ),
+             parse_mode=ParseMode.HTML,
             reply_to_message_id=message.id,
         )
     finally:

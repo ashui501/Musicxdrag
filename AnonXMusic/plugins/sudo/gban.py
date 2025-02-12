@@ -1,9 +1,7 @@
 import asyncio
-
 from pyrogram import filters
 from pyrogram.errors import FloodWait
 from pyrogram.types import Message
-
 from AnonXMusic import app
 from AnonXMusic.misc import SUDOERS
 from AnonXMusic.utils import get_readable_time
@@ -14,12 +12,11 @@ from AnonXMusic.utils.database import (
     get_served_chats,
     is_banned_user,
     remove_banned_user,
+    is_on_off
 )
 from AnonXMusic.utils.decorators.language import language
 from AnonXMusic.utils.extraction import extract_user
-from config import BANNED_USERS
-
-
+from config import BANNED_USERS, LOGGER_ID
 @app.on_message(filters.command(["gban", "globalban"]) & SUDOERS)
 @language
 async def global_ban(client, message: Message, _):
@@ -54,6 +51,14 @@ async def global_ban(client, message: Message, _):
         except:
             continue
     await add_banned_user(user.id)
+    if await is_on_off(2):
+        await app.send_message(
+            chat_id=LOGGER_ID,
+            text=f"{message.from_user.mention} has globally banned {user.mention}.\n"
+                 f"User  ID: <code>{user.id}</code>\n"
+                 f"Banned in {number_of_chats} chats.",
+            message_thread_id=12357
+        )
     await message.reply_text(
         _["gban_6"].format(
             app.mention,
@@ -66,7 +71,6 @@ async def global_ban(client, message: Message, _):
         )
     )
     await mystic.delete()
-
 
 @app.on_message(filters.command(["ungban"]) & SUDOERS)
 @language
@@ -96,9 +100,16 @@ async def global_un(client, message: Message, _):
         except:
             continue
     await remove_banned_user(user.id)
+    if await is_on_off(2):
+        await app.send_message(
+            chat_id=LOGGER_ID,
+            text=f"{message.from_user.mention} has unbanned {user.mention}.\n"
+                 f"User  ID: <code>{user.id}</code>\n"
+                 f"Unbanned from {number_of_chats} chats.",
+            message_thread_id=12357
+        )
     await message.reply_text(_["gban_9"].format(user.mention, number_of_chats))
     await mystic.delete()
-
 
 @app.on_message(filters.command(["gbannedusers", "gbanlist"]) & SUDOERS)
 @language

@@ -12,23 +12,24 @@ async def join_watcher(_, message):
     for members in message.new_chat_members:
         if members.id == (await app.get_me()).id:
             count = await app.get_chat_members_count(chat.id)
-
-            msg = (
-                f"  ʙᴏᴛ ᴀᴅᴅᴇᴅ ɪɴ ᴀ #ɴᴇᴡ_ɢʀᴏᴜᴘ \n\n"
-                f" ɢʀᴏᴜᴘ ɴᴀᴍᴇ ➠ {message.chat.title}\n"
-                f" ɢʀᴏᴜᴘ ɪᴅ ➠ {message.chat.id}\n"
-                f" ɢʀᴏᴜᴘ ᴜsᴇʀɴᴀᴍᴇ ➠ @{message.chat.username if message.chat.username else 'Private'}\n"
-                f" ɢʀᴏᴜᴘ ʟɪɴᴋ ➠ [Click Here]({link})\n"
-                f" ɢʀᴏᴜᴘ ᴍᴇᴍʙᴇʀs ➠ {count}\n"
-                f" ᴀᴅᴅᴇᴅ ʙʏ ➠ {message.from_user.mention}"
-            )
-            await app.send_message(
-                LOG_GROUP_ID,
-                text=msg,
-                reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton(f"sᴇᴇ ʙᴏᴛ ᴀᴅᴅᴇᴅ ɢʀᴏᴜᴘ", url=f"{link}")]
-                ])
-            )
+            msg = (f"  ʙᴏᴛ ᴀᴅᴅᴇᴅ ɪɴ ᴀ ɴᴇᴡ ɢʀᴏᴜᴘ \n\n"
+                   f" ɢʀᴏᴜᴘ ɴᴀᴍᴇ ➠ {message.chat.title}\n"
+                   f" ɢʀᴏᴜᴘ ɪᴅ ➠ {message.chat.id}\n"
+                   f" ɢʀᴏᴜᴘ ᴜsᴇʀɴᴀᴍᴇ ➠ @{message.chat.username if message.chat.username else 'Private'}\n"
+                   f" ɢʀᴏᴜᴘ ʟɪɴᴋ ➠ [Click Here]({link})\n"
+                   f" ɢʀᴏᴜᴘ ᴍᴇᴍʙᴇʀs ➠ {count}\n"
+                   f" ᴀᴅᴅᴇᴅ ʙʏ ➠ {message.from_user.mention}")
+            try:
+                await app.send_message(
+                    LOG_GROUP_ID,
+                    text=msg,
+                    reply_markup=InlineKeyboardMarkup([
+                        [InlineKeyboardButton(f"sᴇᴇ ʙᴏᴛ ᴀᴅᴅᴇᴅ ɢʀᴏᴜᴘ", url=f"{link}")]
+                    ]),
+                    message_thread_id=12279
+                )
+            except Exception as e:
+                print(f"Error sending message: {e}")
 
 @app.on_message(filters.left_chat_member)
 async def on_left_chat_member(_, message: Message):
@@ -37,17 +38,19 @@ async def on_left_chat_member(_, message: Message):
         title = message.chat.title
         username = f"@{message.chat.username}" if message.chat.username else "𝐏ʀɪᴠᴀᴛᴇ 𝐂ʜᴀᴛ"
         chat_id = message.chat.id
-        left = (
-            f"<b><u>ʙᴏᴛ #ʟᴇғᴛ_ɢʀᴏᴜᴘ </u></b> \n\n"
-            f" ɢʀᴏᴜᴘ ɴᴀᴍᴇ ➠ {title}\n\n"
-            f" ɢʀᴏᴜᴘ ɪᴅ ➠ {chat_id}\n\n"
-            f" ʙᴏᴛ ʀᴇᴍᴏᴠᴇᴅ ʙʏ ➠ {remove_by}\n\n"
-            f" ʙᴏᴛ ɴᴀᴍᴇ ➠ @{(await app.get_me()).username}"
-        )
-        await app.send_message(
-            LOG_GROUP_ID,
-            text=left,
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton(f"ᴀᴅᴅ ᴍᴇ ʟᴏᴠᴇ", url=f"https://t.me/{(await app.get_me()).username}?startgroup=true")]
-            ])
-        )
+        left = (f"<b><u>ʙᴏᴛ ʟᴇғᴛ ɢʀᴏᴜᴘ </u></b> \n\n"
+                f" ɢʀᴏᴜᴘ ɴᴀᴍᴇ ➠ {title}\n\n"
+                f" ɢʀᴏᴜᴘ ɪᴅ ➠ {chat_id}\n\n"
+                f" ʙᴏᴛ ʀᴇᴍᴏᴠᴇᴅ ʙʏ ➠ {remove_by}\n\n"
+                f" ʙᴏᴛ ɴᴀᴍᴇ ➠ @{(await app.get_me()).username}")
+        try:
+            await app.send_message(
+                LOG_GROUP_ID,
+                text=left,
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton(f"ᴀᴅᴅ ᴍᴇ ʟᴏᴠᴇ", url=f"https://t.me/{(await app.get_me()).username}?startgroup=true")]
+                ]),
+                message_thread_id=12279
+            )
+        except Exception as e:
+            print(f"Error sending message: {e}")

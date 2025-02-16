@@ -8,7 +8,7 @@ openai.api_key = "sk-proj-1qExLF1QOsihOpfspPzv1TvL9fZzkdN2wsiQxeNJqibCjYqRsxx7ND
 # To store conversations (per user basis, using a dictionary for simplicity)
 user_conversations = {}
 
-@app.on_message(filters.command(["chatgpt", "gpt", "ask"]))  # Add support for "gpt"
+@app.on_message(filters.command(["chatgpt", "gpt"]))  # Add support for "gpt"
 async def ask_handler(client, message):
     user_id = message.from_user.id
     chat_id = message.chat.id

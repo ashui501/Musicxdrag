@@ -99,7 +99,7 @@ def time_to_seconds(time):
     return sum(int(x) * 60**i for i, x in enumerate(reversed(stringt.split(":"))))
 
 
-DURATION_LIMIT = int(time_to_seconds(f"{DURATION_LIMIT_MIN}:120"))
+DURATION_LIMIT = int(time_to_seconds(f"{DURATION_LIMIT_MIN}:0"))
 
 
 if SUPPORT_CHANNEL:

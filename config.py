@@ -20,6 +20,8 @@ DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 200))
 
 SERVER_PLAYLIST_LIMIT = 300  # Set your desired limit here
 
+API_URL = getenv("API_URL", 'https://api.thequickearn.xyz') #youtube song url
+API_KEY = getenv("API_KEY", None) # youtube song api key, get it from https://t.me/RahulTC
 
 # Chat id of a group for logging bot's activities
 LOGGER_ID = int(getenv("LOGGER_ID", ))
